@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* =========================================================
+   GLOBAL APP THEME
+   ========================================================= */
+
+/* DARK MODE - DEFAULT */
+:root {
+  --app-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+html,
+body,
+ion-app,
+ion-content,
+ion-header,
+ion-toolbar,
+ion-title,
+ion-button,
+ion-label,
+ion-input,
+ion-textarea,
+ion-select,
+ion-searchbar,
+ion-segment,
+ion-badge {
+  font-family: var(--app-font);
+}
+
+:root {
+  --app-bg: #f8fafc;
+  --app-card-bg: #ffffff;
+  --app-card-border: #e2e8f0;
+  --app-text: #0f172a;
+  --app-text-muted: #64748b;
+  --app-input-bg: #f1f5f9;
+  --app-input-text: #0f172a;
+  --app-header-bg: #ffffff;
+  --app-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+/* DARK MODE */
+body.dark-theme {
+  --app-bg: #0f172a;
+  --app-card-bg: #1e293b;
+  --app-card-border: rgba(255, 255, 255, 0.1);
+  --app-text: #f8fafc;
+  --app-text-muted: #94a3b8;
+  --app-input-bg: #334155;
+  --app-input-text: #ffffff;
+  --app-header-bg: #1e293b;
+  --app-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+
+/* LIGHT MODE */
+body.light-theme {
+  --app-bg: #f8fafc;
+  --app-card-bg: #ffffff;
+  --app-card-border: #e2e8f0;
+
+  --app-text: #0f172a;
+  --app-text-muted: #64748b;
+
+  --app-input-bg: #f1f5f9;
+  --app-input-text: #0f172a;
+
+  --app-header-bg: #ffffff;
+
+  --app-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+
+/* =========================================================
+   GLOBAL IONIC BACKGROUND / TEXT
+   ========================================================= */
+
+html,
+body,
+ion-app,
+ion-content {
+  background: var(--app-bg);
+  color: var(--app-text);
+}
+
+
+/* Ionic page background */
+ion-content {
+  --background: var(--app-bg);
+  --color: var(--app-text);
+}
+
+
+/* Ionic toolbar */
+ion-toolbar {
+  --background: var(--app-header-bg);
+  --color: var(--app-text);
+}
+
+
+/* Ionic modal background */
+ion-modal {
+  --background: var(--app-bg);
+}
+
+
+/* Ionic inputs */
+ion-input,
+ion-textarea,
+ion-select {
+  --color: var(--app-input-text);
+  --placeholder-color: var(--app-text-muted);
+}

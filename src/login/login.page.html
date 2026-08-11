@@ -1,0 +1,99 @@
+<ion-content
+  [fullscreen]="true"
+  [scrollY]="false"
+  class="login-content">
+
+  <div class="login-container">
+
+    <div class="login-card">
+
+      <!-- HEADER -->
+
+      <div class="login-header">
+
+        <div class="login-icon">
+          <ion-icon name="checkmark-done-outline"></ion-icon>
+        </div>
+
+        <h1>Welcome Back</h1>
+
+        <p>
+          Login to your Todo App
+        </p>
+
+      </div>
+
+
+      <!-- FORM -->
+
+      <div class="form">
+
+        <!-- EMAIL -->
+
+        <ion-input
+          label="Email"
+          labelPlacement="stacked"
+          type="email"
+          placeholder="Enter your email"
+          fill="outline"
+          [(ngModel)]="email">
+
+          <ion-icon
+            slot="start"
+            name="mail-outline">
+          </ion-icon>
+
+        </ion-input>
+
+
+        <!-- PASSWORD -->
+
+        <ion-input
+          label="Password"
+          labelPlacement="stacked"
+          type="password"
+          placeholder="Enter your password"
+          fill="outline"
+          [(ngModel)]="password">
+
+          <ion-icon
+            slot="start"
+            name="lock-closed-outline">
+          </ion-icon>
+
+        </ion-input>
+
+
+        <!-- ERROR -->
+
+        @if (errorMessage) {
+
+          <ion-text color="danger">
+
+            <p class="error-message">
+              {{ errorMessage }}
+            </p>
+
+          </ion-text>
+
+        }
+
+
+        <!-- LOGIN BUTTON -->
+
+        <ion-button
+          expand="block"
+          class="login-button"
+          (click)="login()">
+
+          Login
+
+        </ion-button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</ion-content>

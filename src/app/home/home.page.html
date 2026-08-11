@@ -1,0 +1,760 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+
+    <ion-title>Task Manager</ion-title>
+
+    <ion-buttons slot="end">
+
+    <!-- THEME -->
+    <ion-button
+      fill="clear"
+      class="theme-toggle-button"
+      (click)="toggleTheme()">
+
+      <ion-icon
+        slot="icon-only"
+        [name]="isDarkMode ? 'moon-outline' : 'sunny-outline'">
+      </ion-icon>
+
+    </ion-button>
+
+    <!-- LOGOUT -->
+    <ion-button
+      fill="clear"
+      class="logout-button"
+      (click)="logout()"
+      aria-label="Logout">
+
+      <ion-icon
+        name="log-out-outline"
+        slot="icon-only">
+      </ion-icon>
+
+    </ion-button>
+
+  </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content [fullscreen]="true" class="home-content">
+
+  <div class="mobile-wrapper">
+
+    <!-- ==================== WELCOME ==================== -->
+
+    <section class="welcome-section">
+
+      <div>
+        <p class="welcome-label">Stay organized</p>
+        <h2>Your Tasks</h2>
+      </div>
+
+    </section>
+
+
+   <!-- ==================== STATS / FILTER ==================== -->
+
+<section class="stats-row">
+
+  <!-- TOTAL -->
+  <div
+    class="stat-item"
+    [class.active-total]="selectedStatus === 'All'"
+    (click)="selectStatus('All')"
+  >
+    <div class="stat-icon total-icon">
+      <ion-icon name="list-outline"></ion-icon>
+    </div>
+
+    <div>
+      <strong>{{ totalTasksCount }}</strong>
+      <span>Total</span>
+    </div>
+  </div>
+
+
+  <!-- PENDING -->
+  <div
+    class="stat-item"
+    [class.active-pending]="selectedStatus === 'Pending'"
+    (click)="selectStatus('Pending')"
+  >
+    <div class="stat-icon pending-icon">
+      <ion-icon name="time-outline"></ion-icon>
+    </div>
+
+    <div>
+      <strong>{{ pendingCount }}</strong>
+      <span>Pending</span>
+    </div>
+  </div>
+
+
+  <!-- COMPLETED -->
+  <div
+    class="stat-item"
+    [class.active-completed]="selectedStatus === 'Completed'"
+    (click)="selectStatus('Completed')"
+  >
+    <div class="stat-icon completed-icon">
+      <ion-icon name="checkmark-circle-outline"></ion-icon>
+    </div>
+
+    <div>
+      <strong>{{ completedCount }}</strong>
+      <span>Done</span>
+    </div>
+  </div>
+
+</section>
+
+    <!-- ==================== SEARCH ==================== -->
+
+    <section class="search-section">
+
+      <ion-searchbar
+        [value]="searchQuery"
+        (ionInput)="onSearchChange($event)"
+        placeholder="Search tasks..."
+        debounce="200"
+        show-clear-button="never">
+      </ion-searchbar>
+
+    </section>
+
+
+    <!-- ==================== FILTER ====================
+
+    <section class="filter-section">
+
+      <ion-segment
+        [value]="selectedStatus"
+        (ionChange)="onStatusFilterChange($event)">
+
+        <ion-segment-button value="All">
+          <ion-label>All</ion-label>
+        </ion-segment-button>
+
+        <ion-segment-button value="Pending">
+          <ion-label>Pending</ion-label>
+        </ion-segment-button>
+
+        <ion-segment-button value="Completed">
+          <ion-label>Done</ion-label>
+        </ion-segment-button>
+
+      </ion-segment>
+
+    </section>
+ -->
+
+    <!-- ==================== TASK HEADER ==================== -->
+
+    <div class="task-section-header">
+
+      <div>
+        <h3>
+          <!-- {{ selectedStatus === 'All' ? 'All Tasks' : selectedStatus + ' Tasks' }} -->
+        </h3>
+
+        <span>
+          {{ filteredTodos.length }}
+          {{ filteredTodos.length === 1 ? 'task' : 'tasks' }}
+        </span>
+      </div>
+
+      <div class="page-size-picker">
+
+        <span>Show</span>
+
+        <ion-select
+          [value]="pageSize"
+          (ionChange)="onPageSizeChange($event)"
+          interface="popover">
+
+          @for (opt of pageSizeOptions; track opt) {
+            <ion-select-option [value]="opt">
+              {{ opt }}
+            </ion-select-option>
+          }
+
+        </ion-select>
+
+      </div>
+
+    </div>
+
+
+    <!-- ==================== TASK LIST ==================== -->
+
+    <section class="task-list">
+
+      @if (paginatedTodos.length > 0) {
+
+        @for (todo of paginatedTodos; track todo.id) {
+
+          <article
+            class="task-card"
+            [class.completed]="todo.completed"
+            (click)="toggleStatus(todo)">
+
+            <!-- STATUS -->
+
+            <button
+              type="button"
+              class="task-check"
+              [class.checked]="todo.completed"
+              (click)="toggleStatus(todo, $event)"
+              title="Toggle status">
+
+              <ion-icon
+                [name]="todo.completed
+                  ? 'checkmark-outline'
+                  : 'ellipse-outline'">
+              </ion-icon>
+
+            </button>
+
+
+            <!-- TASK INFORMATION -->
+
+            <div class="task-main">
+
+              <div class="task-title-row">
+
+                <h4 [class.line-through]="todo.completed">
+                  {{ todo.title }}
+                </h4>
+
+                <ion-badge
+                  [color]="getPriorityColor(todo.priority)"
+                  class="priority-badge">
+
+                  {{ todo.priority || 'Medium' }}
+
+                </ion-badge>
+
+              </div>
+
+
+              @if (todo.description) {
+
+                <p
+                  class="task-description"
+                  [class.line-through]="todo.completed">
+
+                  {{ todo.description }}
+
+                </p>
+
+              }
+
+
+              <div class="task-meta">
+
+                @if (todo.dueDate) {
+                  <span class="due-date">
+                    <ion-icon name="calendar-outline"></ion-icon>
+                    {{ formatDateDisplay(todo.dueDate) }}
+                    @if (todo.dueTime) {
+                      <span class="due-time">{{ todo.dueTime }}</span>
+                    }
+                  </span>
+                }
+
+
+                <span
+                  class="status-label"
+                  [class.done]="todo.completed">
+
+                  <ion-icon
+                    [name]="todo.completed
+                      ? 'checkmark-circle-outline'
+                      : 'time-outline'">
+                  </ion-icon>
+
+                  {{ todo.completed ? 'Completed' : 'Pending' }}
+
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div
+              class="task-actions"
+              (click)="$event.stopPropagation()">
+
+              <ion-button
+                fill="clear"
+                class="task-action edit-action"
+                (click)="editTodo(todo, $event)"
+                title="Edit Task">
+
+                <ion-icon
+                  name="create-outline"
+                  slot="icon-only">
+                </ion-icon>
+
+              </ion-button>
+
+
+              <ion-button
+                fill="clear"
+                class="task-action delete-action"
+                (click)="deleteTodo(todo.id, $event)"
+                title="Delete Task">
+
+                <ion-icon
+                  name="trash-outline"
+                  slot="icon-only">
+                </ion-icon>
+
+              </ion-button>
+
+            </div>
+
+          </article>
+
+        }
+
+      } @else {
+
+        <!-- EMPTY STATE -->
+
+        <div class="empty-state">
+
+          <div class="empty-icon">
+            <ion-icon name="checkmark-done-outline"></ion-icon>
+          </div>
+
+          <h3>No tasks found</h3>
+
+          <p>
+            Try changing your search or filter,
+            or create a new task.
+          </p>
+
+          <ion-button
+            fill="solid"
+            (click)="openAddModal()">
+
+            <ion-icon
+              name="add-outline"
+              slot="start">
+            </ion-icon>
+
+            Create Task
+
+          </ion-button>
+
+        </div>
+
+      }
+
+    </section>
+
+
+    <!-- ==================== PAGINATION ==================== -->
+
+    @if (filteredTodos.length > 0) {
+
+      <section class="pagination">
+
+        <ion-button
+          fill="clear"
+          class="pagination-button"
+          [disabled]="currentPage <= 1"
+          (click)="prevPage()">
+
+          <ion-icon
+            name="chevron-back-outline"
+            slot="icon-only">
+          </ion-icon>
+
+        </ion-button>
+
+
+        <div class="pagination-text">
+
+          <strong>{{ currentPage }}</strong>
+
+          <span>of</span>
+
+          <strong>{{ totalPages }}</strong>
+
+        </div>
+
+
+        <ion-button
+          fill="clear"
+          class="pagination-button"
+          [disabled]="currentPage >= totalPages"
+          (click)="nextPage()">
+
+          <ion-icon
+            name="chevron-forward-outline"
+            slot="icon-only">
+          </ion-icon>
+
+        </ion-button>
+
+      </section>
+
+    }
+
+  </div>
+
+  <!-- ========================================================= -->
+<!-- FLOATING ADD BUTTON -->
+<!-- ========================================================= -->
+
+<div class="bottom-space"></div>
+
+<ion-fab
+  slot="fixed"
+  vertical="bottom"
+  horizontal="end"
+  class="add-fab">
+
+  <ion-fab-button
+    (click)="openAddModal()"
+    aria-label="Add new task">
+
+    <ion-icon name="add-outline"></ion-icon>
+
+  </ion-fab-button>
+
+</ion-fab>
+
+</ion-content>
+
+<!-- =========================================================
+     ADD TASK MODAL
+     ========================================================= -->
+
+<ion-modal
+  [isOpen]="showAddModal"
+  (didDismiss)="showAddModal = false"
+  class="task-modal add-task-modal">
+
+  <ng-template>
+
+    <ion-header>
+      <ion-toolbar>
+
+        <ion-title class="">Add Task</ion-title>
+
+        <ion-buttons slot="end">
+          <ion-button
+            fill="clear"
+            (click)="showAddModal = false">
+            Cancel
+          </ion-button>
+        </ion-buttons>
+
+      </ion-toolbar>
+    </ion-header>
+
+
+    <ion-content class="modal-content">
+
+      <div class="modal-body">
+
+        <!-- INTRO -->
+
+        <div class="modal-intro">
+
+          <div class="modal-icon">
+            <ion-icon name="add-outline"></ion-icon>
+          </div>
+
+          <div>
+            <h2>Create a new task</h2>
+            <p>Add the details of your task.</p>
+          </div>
+
+        </div>
+
+
+        <!-- TITLE -->
+
+        <div class="form-group">
+
+          <ion-input
+            label="Title *"
+            labelPlacement="stacked"
+            fill="outline"
+            placeholder="What needs to be done?"
+            [(ngModel)]="newTodo.title">
+          </ion-input>
+
+        </div>
+
+
+        <!-- DESCRIPTION -->
+
+        <div class="form-group">
+
+          <ion-textarea
+            label="Description"
+            labelPlacement="stacked"
+            fill="outline"
+            rows="4"
+            placeholder="Add some details..."
+            [(ngModel)]="newTodo.description">
+          </ion-textarea>
+
+        </div>
+
+        <!-- DATE -->
+
+        <div class="form-group">
+
+          <ion-input
+            label="Due Date"
+            labelPlacement="stacked"
+            fill="outline"
+            type="date"
+            [(ngModel)]="newTodo.dueDate">
+          </ion-input>
+
+        </div>
+
+        <!-- TIME -->
+
+        <div class="form-group">
+          <ion-label class="datetime-label">Due Time</ion-label>
+
+          <div class="datetime-field">
+            <ion-datetime
+              presentation="time"
+              hourCycle="h12"
+              [(ngModel)]="newTodo.dueTime">
+            </ion-datetime>
+          </div>
+        </div>
+
+        <!-- PRIORITY -->
+
+        <div class="form-group">
+
+          <ion-select
+            label="Priority"
+            labelPlacement="stacked"
+            fill="outline"
+            [(ngModel)]="newTodo.priority"
+            interface="popover">
+
+            <ion-select-option value="Low">
+              Low
+            </ion-select-option>
+
+            <ion-select-option value="Medium">
+              Medium
+            </ion-select-option>
+
+            <ion-select-option value="High">
+              High
+            </ion-select-option>
+
+          </ion-select>
+
+        </div>
+
+
+        <!-- CREATE -->
+
+        <ion-button
+          expand="block"
+          class="submit-btn"
+          [disabled]="!newTodo.title.trim()"
+          (click)="addTodo()">
+
+          <ion-icon
+            name="checkmark-outline"
+            slot="start">
+          </ion-icon>
+
+          Create Task
+
+        </ion-button>
+
+      </div>
+
+    </ion-content>
+
+  </ng-template>
+
+</ion-modal>
+
+<!-- ========================================================= -->
+<!-- EDIT TASK MODAL -->
+<!-- ========================================================= -->
+
+<ion-modal
+  [isOpen]="showEditModal"
+  (didDismiss)="showEditModal = false"
+  class="task-modal edit-task-modal">
+
+  <ng-template>
+
+    <ion-header>
+      <ion-toolbar>
+
+        <ion-title>Edit Task</ion-title>
+
+        <ion-buttons slot="end">
+          <ion-button
+            fill="clear"
+            (click)="showEditModal = false">
+            Cancel
+          </ion-button>
+        </ion-buttons>
+
+      </ion-toolbar>
+    </ion-header>
+
+
+    <ion-content class="modal-content">
+
+      <div class="modal-body">
+
+        @if (editingTodo) {
+
+      <!-- ================================================= -->
+      <!-- HEADER / INTRO -->
+      <!-- ================================================= -->
+
+      <div class="modal-intro">
+
+        <div class="modal-icon edit-modal-icon">
+          <ion-icon name="create-outline"></ion-icon>
+        </div>
+
+        <div>
+          <h2>Edit your task</h2>
+          <p>Make changes to your task below.</p>
+        </div>
+
+      </div>
+
+
+      <!-- ================================================= -->
+      <!-- TITLE -->
+      <!-- ================================================= -->
+
+      <div class="form-group">
+        <ion-input
+          label="Title *"
+          labelPlacement="stacked"
+          fill="outline"
+          placeholder="Enter task title"
+          [(ngModel)]="editingTodo.title">
+        </ion-input>
+
+      </div>
+
+
+      <!-- ================================================= -->
+      <!-- DESCRIPTION -->
+      <!-- ================================================= -->
+
+      <div class="form-group">
+        <ion-textarea
+          label="Description"
+          labelPlacement="stacked"
+          fill="outline"
+          rows="4"
+          placeholder="Add some details about this task..."
+          [(ngModel)]="editingTodo.description">
+        </ion-textarea>
+
+      </div>
+
+
+      <!-- ================================================= -->
+      <!-- DATE + PRIORITY -->
+      <!-- ================================================= -->
+
+      <div class="form-group">
+          <ion-input
+            label="Due Date"
+            labelPlacement="stacked"
+            fill="outline"
+            type="date"
+            [(ngModel)]="editingTodo.dueDate">
+          </ion-input>
+      </div>
+
+      <!-- TIME -->
+
+      <div class="form-group">
+        <ion-label class="datetime-label">Due Time</ion-label>
+
+        <div class="datetime-field">
+          <ion-datetime
+            presentation="time"
+            hourCycle="h12"
+            [(ngModel)]="editingTodo.dueTime">
+          </ion-datetime>
+        </div>
+      </div>
+
+      <div class="form-group">
+          <ion-select
+            label="Priority"
+            labelPlacement="stacked"
+            fill="outline"
+            interface="popover"
+            [(ngModel)]="editingTodo.priority">
+
+            <ion-select-option value="Low">
+              Low
+            </ion-select-option>
+
+            <ion-select-option value="Medium">
+              Medium
+            </ion-select-option>
+
+            <ion-select-option value="High">
+              High
+            </ion-select-option>
+
+          </ion-select>
+      </div>
+
+
+      <!-- ================================================= -->
+      <!-- SAVE BUTTON -->
+      <!-- ================================================= -->
+
+      <ion-button
+        expand="block"
+        class="submit-btn"
+        [disabled]="!editingTodo.title.trim()"
+        (click)="updateTodo()">
+
+        <ion-icon
+          name="checkmark-circle-outline"
+          slot="start">
+        </ion-icon>
+
+        Save Changes
+
+      </ion-button>
+
+        }
+
+      </div>
+
+    </ion-content>
+
+  </ng-template>
+
+</ion-modal>

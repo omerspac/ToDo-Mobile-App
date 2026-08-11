@@ -1,0 +1,387 @@
+/* =========================================================
+   LOGIN PAGE — FIXED / NO SCROLL
+   ========================================================= */
+
+.login-content {
+  --background: var(--app-bg);
+  --color: var(--app-text);
+
+  position: fixed;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden !important;
+
+  --overflow: hidden;
+}
+
+
+/* Force Ionic's internal scroll container to stay fixed */
+
+.login-content::part(scroll) {
+  overflow: hidden !important;
+
+  height: 100%;
+
+  min-height: 100%;
+
+  padding: 0 !important;
+
+  overscroll-behavior: none;
+
+  touch-action: none;
+}
+
+
+/* =========================================================
+   CONTAINER
+   ========================================================= */
+
+.login-container {
+  position: fixed;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+
+  padding: 24px;
+
+  overflow: hidden;
+
+  /* Prevent browser/WebView from scrolling the page */
+  overscroll-behavior: none;
+}
+
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.login-card {
+  width: 100%;
+  max-width: 390px;
+
+  box-sizing: border-box;
+
+  /* Prevent the focused input from causing layout movement */
+  transform: translateZ(0);
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.login-header {
+  text-align: center;
+
+  margin-bottom: 30px;
+}
+
+
+/* APP ICON */
+
+.login-icon {
+  width: 64px;
+  height: 64px;
+
+  margin: 0 auto 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 18px;
+
+  background: rgba(59, 130, 246, 0.12);
+
+  color: #3b82f6;
+}
+
+.login-icon ion-icon {
+  font-size: 34px;
+}
+
+
+/* TITLE */
+
+.login-header h1 {
+  margin: 0 0 8px;
+
+  color: var(--app-text);
+
+  font-size: 30px;
+  line-height: 1.15;
+
+  font-weight: 750;
+
+  letter-spacing: -0.5px;
+}
+
+
+/* SUBTITLE */
+
+.login-header p {
+  margin: 0;
+
+  color: var(--app-text-muted);
+
+  font-size: 15px;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.form {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 18px;
+
+  width: 100%;
+}
+
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+.form ion-input {
+  --background: var(--app-card-bg);
+
+  --color: var(--app-text);
+
+  --placeholder-color: var(--app-text-muted);
+
+  --border-color: var(--app-card-border);
+
+  --border-radius: 14px;
+
+  --highlight-color-focused: #3b82f6;
+
+  --padding-start: 14px;
+  --padding-end: 14px;
+
+  min-height: 58px;
+
+  color: var(--app-text);
+
+  font-size: 16px;
+}
+
+
+/* INPUT ICONS */
+
+.form ion-input ion-icon {
+  color: var(--app-text-muted);
+
+  font-size: 20px;
+
+  margin-right: 8px;
+}
+
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.error-message {
+  margin: -4px 2px 0;
+
+  color: #ef4444;
+
+  font-size: 14px;
+
+  line-height: 1.4;
+}
+
+
+/* =========================================================
+   LOGIN BUTTON
+   ========================================================= */
+
+.login-button {
+  --border-radius: 14px;
+
+  min-height: 54px;
+
+  margin-top: 4px;
+
+  font-size: 16px;
+
+  font-weight: 700;
+
+  text-transform: none;
+
+  letter-spacing: 0;
+}
+
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+body.dark-theme {
+
+  .login-content {
+    --background: #0f172a;
+    --color: #f8fafc;
+  }
+
+  .login-header h1 {
+    color: #f8fafc;
+  }
+
+  .login-header p {
+    color: #94a3b8;
+  }
+
+  .login-icon {
+    background: rgba(96, 165, 250, 0.14);
+
+    color: #60a5fa;
+  }
+
+  .form ion-input {
+    --background: #1e293b;
+
+    --color: #f8fafc;
+
+    --placeholder-color: #94a3b8;
+
+    --border-color: rgba(255, 255, 255, 0.12);
+
+    color: #f8fafc;
+  }
+
+  .form ion-input ion-icon {
+    color: #94a3b8;
+  }
+}
+
+
+/* =========================================================
+   LIGHT MODE
+   ========================================================= */
+
+body:not(.dark-theme) {
+
+  .login-content {
+    --background: #f8fafc;
+    --color: #0f172a;
+  }
+
+  .login-header h1 {
+    color: #0f172a;
+  }
+
+  .login-header p {
+    color: #64748b;
+  }
+
+  .login-icon {
+    background: rgba(59, 130, 246, 0.10);
+
+    color: #2563eb;
+  }
+
+  .form ion-input {
+    --background: #ffffff;
+
+    --color: #0f172a;
+
+    --placeholder-color: #64748b;
+
+    --border-color: #e2e8f0;
+
+    color: #0f172a;
+  }
+
+  .form ion-input ion-icon {
+    color: #64748b;
+  }
+}
+
+
+/* =========================================================
+   SMALL PHONE
+   ========================================================= */
+
+@media (max-height: 700px) {
+
+  .login-container {
+    padding: 18px;
+  }
+
+  .login-header {
+    margin-bottom: 20px;
+  }
+
+  .login-icon {
+    width: 52px;
+    height: 52px;
+
+    margin-bottom: 12px;
+
+    border-radius: 15px;
+  }
+
+  .login-icon ion-icon {
+    font-size: 28px;
+  }
+
+  .login-header h1 {
+    font-size: 26px;
+  }
+
+  .login-header p {
+    font-size: 13px;
+  }
+
+  .form {
+    gap: 13px;
+  }
+
+  .form ion-input {
+    min-height: 52px;
+  }
+
+  .login-button {
+    min-height: 50px;
+  }
+}
+
+
+/* =========================================================
+   SMALL WIDTH
+   ========================================================= */
+
+@media (max-width: 360px) {
+
+  .login-container {
+    padding: 16px;
+  }
+
+  .login-header h1 {
+    font-size: 25px;
+  }
+
+  .login-card {
+    max-width: 100%;
+  }
+}
